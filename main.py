@@ -98,17 +98,18 @@ class Player(pg.sprite.Sprite):
             self.pos = vec(self.npos)
             self.rect.center = self.nrect.center
         self.nrect.center = self.rect.center
-        asl.empty()
+        #asl.empty()
         #read('assets/1.lvl',self.pos.x-cr(11),self.pos.y-cr(6),self.pos.x+cr(11),self.pos.y+cr(6))
-        asl.add(self)
+        #asl.add(self)
         if self.pos.y > cr(11) and self.pos.x < cr(20):
             read('assets/1.lvl',cr(0),cr(10),width,cr(10)+height)
-        if self.pos.y < cr(9) and self.pos.x < cr(20):
+        elif self.pos.y < cr(9) and self.pos.x < cr(20):
             read('assets/1.lvl',cr(0),cr(0),width,height)
-        if self.pos.y > cr(11) and self.pos.x > cr(22):
+        elif self.pos.y > cr(11) and self.pos.x > cr(22):
             read('assets/1.lvl',cr(21),cr(10),cr(21)+width,cr(10)+height)
-        if self.pos.y < cr(9) and self.pos.x > cr(22):
+        elif self.pos.y < cr(9) and self.pos.x > cr(22):
             read('assets/1.lvl',cr(21),cr(0),cr(21)+width,height)
+        print()
         
         
     def check(self,s,o):
