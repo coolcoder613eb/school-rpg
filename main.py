@@ -1,8 +1,12 @@
 import pygame as pg
+from pygame.locals import *
 import pytmx
 from pytmx.util_pygame import load_pygame
 pg.init()
 
+
+def cr(num):
+    return ((num * tilewidth)*2) + 20
 
 
 black = (0,0,0)
@@ -10,11 +14,12 @@ white = (255,255,255)
 grey = (137,137,137)
 
 tilewidth = 32
+width = cr(44/2)
+height = cr(24/2)
 
 vec = pg.math.Vector2
 
-def cr(num):
-    return ((num * tilewidth)*2) + 20
+
 
 def read(file,startx,starty,endx,endy):
     tiled_map.layers
@@ -53,26 +58,62 @@ class Player(pg.sprite.Sprite):
         super().__init__()
         self.vel = vec(0, 0)
         self.pos = vec(coords[0], coords[1])
+        self.npos = vec(coords[0], coords[1])
+        self.img = image
         self.surf = image#pg.transform.scale(image,(32,32))#pg.image.load(image).convert_alpha()
         self.rect = self.surf.get_rect(center = coords)
-    def update():
-        PRESSED = pygame.key.get_pressed()
+        self.nrect = self.surf.get_rect(center = coords)
+    def update(self):
+        #print('npos1 ',self.npos,'\nnrect1 ',self.nrect)
+        #'\nrect1 ',self.rect)
+        self.npos = vec(self.pos)
+        self.nrect.center = self.rect.center
+        
+        PRESSED = pg.key.get_pressed()
+        #print('pos1 ',self.pos,)
+        if PRESSED[pg.K_LEFT]:
+            self.npos[0]-=5
+            self.surf = pg.transform.rotate(self.img,180)
+            self.rect = self.surf.get_rect(center = self.rect.center)
+            self.nrect = self.surf.get_rect(center = self.nrect.center)
+        if PRESSED[pg.K_RIGHT]:
+            self.npos[0]+=5
+            self.surf = pg.transform.rotate(self.img,0)
+            self.rect = self.surf.get_rect(center = self.rect.center)
+            self.nrect = self.surf.get_rect(center = self.nrect.center)
+        if PRESSED[pg.K_UP]:
+            self.npos[1]-=5
+            self.surf = pg.transform.rotate(self.img,90)
+            self.rect = self.surf.get_rect(center = self.rect.center)
+            self.nrect = self.surf.get_rect(center = self.nrect.center)
+        if PRESSED[pg.K_DOWN]:
+            self.npos[1]+=5
+            self.surf = pg.transform.rotate(self.img,-90)
+            self.rect = self.surf.get_rect(center = self.rect.center)
+            self.nrect = self.surf.get_rect(center = self.nrect.center)
+        
+        #print('pos2 ',self.pos,'\n')
+        self.nrect.center = (self.npos.x,self.npos.y)
+        if not pg.sprite.spritecollide(player,collide,False,collided = self.check):
+            self.pos = vec(self.npos)
+            self.rect.center = self.nrect.center
+        self.nrect.center = self.rect.center
+        #asl.empty()
+        #read('assets/1.lvl',self.pos.x-cr(11),self.pos.y-cr(6),self.pos.x+cr(11),self.pos.y+cr(6))
+        #asl.add(self)
+        
+    def check(self,s,o):
+        if s.nrect.colliderect(o.rect):
+            return True
+        else:
+            return False
 
-        if PRESSED[pygame.K_LEFT]:
-            pos[0]-=10
-        elif PRESSED[pygame.K_RIGHT]:
-            pos[0]+=10
-        if PRESSED[pygame.K_UP]:
-            pos[1]-=10
-        elif PRESSED[pygame.K_DOWN]:
-            pos[1]+=10  
-
-screen = pg.display.set_mode((cr(40/2)-20,cr(20/2)-15))
+screen = pg.display.set_mode((width,height),RESIZABLE)
 pg.display.set_caption('rpg')
 
 
 asl   = pg.sprite.Group()
-player = Player(pg.image.load('assets/playerright.png'),(cr(14),cr(6)))
+player = Player(pg.image.load('assets/playerright1.png'),(cr(11),cr(6)))
 
 
 collide = pg.sprite.Group()
@@ -81,12 +122,12 @@ tiled_map = load_pygame('assets/1.tmx')
 tilewidth = tiled_map.tilewidth
 tileheight = tiled_map.tileheight
 collision = tiled_map.get_layer_by_name('collide')
-read('assets/1.lvl',0,0,20,10)
+read('assets/1.lvl',0,0,width,height)
 clock = pg.time.Clock()
 running = True
 
 asl.add(player)
-screen = pg.display.set_mode((cr(40/2)-20,cr(20/2)-15))
+screen = pg.display.set_mode((width,height),RESIZABLE)
 
 screen.fill(grey)
 
@@ -98,14 +139,22 @@ while running:
                     if event.key==pg.K_x or event.key==pg.K_q: #Pressing the x Key will quit the game
                          running=False
 
+    screen.fill(grey)
+
+
+    
+
 
     #print(asl)
     for entity in asl:
         screen.blit(entity.surf, entity.rect)
+    player.update()
 
 
     #screen.fill(black)
     pg.display.flip()
     clock.tick(60)
 
+
 pg.quit()
+input()

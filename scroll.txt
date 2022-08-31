@@ -1,0 +1,2 @@
+how  to do scrolling
+read(self.pos.x-cr(11),self.pos.y-cr(6),self.pos.x+cr(11),self.pos.y+cr(6))
