@@ -39,6 +39,7 @@ def read(file,startx,starty,endx,endy):
         if cr(x) >= startx and cr(x) <= endx and cr(y) >= starty and cr(y) <= endy: 
             h = Platform(image,((cr(x))-startx,cr(y)-starty))#f'assets/tileset/{int(l[y][x])+1}.png'
             collide.add(h)
+            #asl.add(h)
     for f in range(2):
         layer = tiled_map.layers[f+1]
         for x, y, image in layer.tiles():
@@ -93,15 +94,15 @@ class Player(pg.sprite.Sprite):
             self.nrect = self.surf.get_rect(center = self.nrect.center)
         
         #print('pos2 ',self.pos,'\n')
-        self.nrect.center = (self.npos.x,self.npos.y)
+        self.nrect.center = (self.npos[0],self.npos[1])
         if not pg.sprite.spritecollide(player,collide,False,collided = self.check):
             self.pos = vec(self.npos)
             self.rect.center = self.nrect.center
-        self.nrect.center = self.rect.center
+            self.nrect.center = self.rect.center
         print((self.pos.x-cr(12),self.pos.y-cr(7),self.pos.x+cr(13),self.pos.y+cr(8)))
         asl.empty()
         collide.empty()
-        read('assets/1.lvl',self.pos.x-cr(12),self.pos.y-cr(7),self.pos.x+cr(13),self.pos.y+cr(8))
+        read('assets/1.lvl',self.pos[0]-cr(12),self.pos[1]-cr(7),self.pos[0]+cr(13),self.pos[1]+cr(8))
         #asl.add(self)
 ##        if self.pos.y > cr(11) and self.pos.x < cr(20):
 ##            read('assets/1.lvl',cr(0),cr(10),width,cr(10)+height)
