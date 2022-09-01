@@ -23,10 +23,10 @@ vec = pg.math.Vector2
 
 def read(file,startx,starty,endx,endy):
     tiled_map.layers
-    for x in range(3):
-        print(tiled_map.layers[x])
+    #for x in range(3):
+        #print(tiled_map.layers[x])
     #s = j.splitlines()
-    l = []
+    #l = []
     #for x in layer:
     #    l.append(x.split(','))
 
@@ -36,16 +36,16 @@ def read(file,startx,starty,endx,endy):
     for x, y, image in layer.tiles():
         #print(int(l[y][x])+1)
         #print(image)
-        if x >= startx and x <= endx and y >= starty and y <= endy: 
-            h = Platform(image,(cr(x)-5,cr(y)))#f'assets/tileset/{int(l[y][x])+1}.png'
+        if cr(x) >= startx and cr(x) <= endx and cr(y) >= starty and cr(y) <= endy: 
+            h = Platform(image,((cr(x))-startx,cr(y)-starty))#f'assets/tileset/{int(l[y][x])+1}.png'
             collide.add(h)
     for f in range(2):
         layer = tiled_map.layers[f+1]
         for x, y, image in layer.tiles():
             #print(int(l[y][x])+1)
             #print(image)
-            if x >= startx and x <= endx and y >= starty and y <= endy:
-                h = Platform(image,(cr(x)-5,cr(y)))#f'assets/tileset/{int(l[y][x])+1}.png'
+            if cr(x) >= startx and cr(x) <= endx and cr(y) >= starty and cr(y) <= endy:
+                h = Platform(image,((cr(x))-startx,(cr(y))-starty))#f'assets/tileset/{int(l[y][x])+1}.png'
                 asl.add(h)
                     
 class Platform(pg.sprite.Sprite):
@@ -72,22 +72,22 @@ class Player(pg.sprite.Sprite):
         PRESSED = pg.key.get_pressed()
         #print('pos1 ',self.pos,)
         if PRESSED[pg.K_LEFT]:
-            self.npos[0]-=5
+            self.npos[0]-=2
             self.surf = pg.transform.rotate(self.img,180)
             self.rect = self.surf.get_rect(center = self.rect.center)
             self.nrect = self.surf.get_rect(center = self.nrect.center)
         if PRESSED[pg.K_RIGHT]:
-            self.npos[0]+=5
+            self.npos[0]+=2
             self.surf = pg.transform.rotate(self.img,0)
             self.rect = self.surf.get_rect(center = self.rect.center)
             self.nrect = self.surf.get_rect(center = self.nrect.center)
         if PRESSED[pg.K_UP]:
-            self.npos[1]-=5
+            self.npos[1]-=2
             self.surf = pg.transform.rotate(self.img,90)
             self.rect = self.surf.get_rect(center = self.rect.center)
             self.nrect = self.surf.get_rect(center = self.nrect.center)
         if PRESSED[pg.K_DOWN]:
-            self.npos[1]+=5
+            self.npos[1]+=2
             self.surf = pg.transform.rotate(self.img,-90)
             self.rect = self.surf.get_rect(center = self.rect.center)
             self.nrect = self.surf.get_rect(center = self.nrect.center)
@@ -98,18 +98,21 @@ class Player(pg.sprite.Sprite):
             self.pos = vec(self.npos)
             self.rect.center = self.nrect.center
         self.nrect.center = self.rect.center
-        #asl.empty()
-        #read('assets/1.lvl',self.pos.x-cr(11),self.pos.y-cr(6),self.pos.x+cr(11),self.pos.y+cr(6))
+        print((self.pos.x-cr(12),self.pos.y-cr(7),self.pos.x+cr(13),self.pos.y+cr(8)))
+        asl.empty()
+        collide.empty()
+        read('assets/1.lvl',self.pos.x-cr(12),self.pos.y-cr(7),self.pos.x+cr(13),self.pos.y+cr(8))
         #asl.add(self)
-        if self.pos.y > cr(11) and self.pos.x < cr(20):
-            read('assets/1.lvl',cr(0),cr(10),width,cr(10)+height)
-        elif self.pos.y < cr(9) and self.pos.x < cr(20):
-            read('assets/1.lvl',cr(0),cr(0),width,height)
-        elif self.pos.y > cr(11) and self.pos.x > cr(22):
-            read('assets/1.lvl',cr(21),cr(10),cr(21)+width,cr(10)+height)
-        elif self.pos.y < cr(9) and self.pos.x > cr(22):
-            read('assets/1.lvl',cr(21),cr(0),cr(21)+width,height)
-        print()
+##        if self.pos.y > cr(11) and self.pos.x < cr(20):
+##            read('assets/1.lvl',cr(0),cr(10),width,cr(10)+height)
+##        elif self.pos.y < cr(9) and self.pos.x < cr(20):
+##            read('assets/1.lvl',cr(0),cr(0),width,height)
+##        elif self.pos.y > cr(11) and self.pos.x > cr(22):
+##            read('assets/1.lvl',cr(21),cr(10),cr(21)+width,cr(10)+height)
+##        elif self.pos.y < cr(9) and self.pos.x > cr(22):
+##            read('assets/1.lvl',cr(21),cr(0),cr(21)+width,height)
+        asl.add(self)
+        #print()
         
         
     def check(self,s,o):
@@ -123,7 +126,7 @@ pg.display.set_caption('rpg')
 
 
 asl   = pg.sprite.Group()
-player = Player(pg.image.load('assets/playerright1.png'),(cr(11),cr(6)))
+player = Player(pg.image.load('assets/bachur1.png'),(cr(11),cr(6)))#playerright1
 
 
 collide = pg.sprite.Group()
